@@ -63,6 +63,9 @@ USER nobody
 WORKDIR /var/www/html
 COPY --chown=nobody src/ /var/www/html/
 
+# Add a volume so that the external source code can be hooked
+VOLUME [ "/var/www/html" ]
+
 # Expose the port nginx is reachable on
 EXPOSE 8080
 
