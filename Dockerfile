@@ -1,11 +1,10 @@
-FROM php:7.4.19-fpm-alpine3.13
+FROM php:8.0.5-fpm-alpine3.13
 
 # Install packages and remove default server definition
-RUN apk --no-cache add php7-fpm nginx supervisor gnupg php7-pear php7-dev php7-pdo php7-openssl make g++
-    
-RUN rm /etc/nginx/conf.d/default.conf
+RUN apk --no-cache add gnupg autoconf make g++ nginx supervisor && \
+    rm /etc/nginx/conf.d/default.conf
 
-# Microsoft SQL Server Prerequisites
+# Download Microsoft SQL Server Prerequisites
 RUN curl -O https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.7.2.1-1_amd64.apk
 RUN curl -O https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/mssql-tools_17.7.1.1-1_amd64.apk
 
@@ -20,14 +19,14 @@ RUN gpg --verify mssql-tools_17.7.1.1-1_amd64.sig mssql-tools_17.7.1.1-1_amd64.a
 RUN apk add --allow-untrusted msodbcsql17_17.7.2.1-1_amd64.apk
 RUN apk add --allow-untrusted mssql-tools_17.7.1.1-1_amd64.apk
 
-# Cleaning up the ODBC packages
+# Remove the ODBC packages
 RUN rm msodbcsql17_17.7.2.1-1_amd64.apk \
     mssql-tools_17.7.1.1-1_amd64.apk \
     msodbcsql17_17.7.2.1-1_amd64.sig \
     mssql-tools_17.7.1.1-1_amd64.sig
 
 # Install unixodbc-dev required for pecl
-RUN apk add unixodbc-dev
+RUN apk add --allow-untrusted unixodbc-dev
 
 # Install SQL Server Drivers
 RUN pecl install sqlsrv pdo_sqlsrv
@@ -36,10 +35,6 @@ RUN docker-php-ext-enable --ini-name 35-pdo_sqlsrv.ini pdo_sqlsrv
 
 # Configure nginx
 COPY config/nginx.conf /etc/nginx/nginx.conf
-
-# Configure PHP-FPM
-COPY config/fpm-pool.conf /etc/php7/php-fpm.d/www.conf
-COPY config/php.ini /etc/php7/conf.d/custom.ini
 
 # Configure supervisord
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
