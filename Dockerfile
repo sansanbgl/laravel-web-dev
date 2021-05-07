@@ -33,8 +33,15 @@ RUN pecl install sqlsrv pdo_sqlsrv
 RUN docker-php-ext-enable --ini-name 30-sqlsrv.ini sqlsrv
 RUN docker-php-ext-enable --ini-name 35-pdo_sqlsrv.ini pdo_sqlsrv
 
+# Install Xdebug
+RUN pecl install xdebug
+RUN docker-php-ext-enable --ini-name 30-xdebug.ini xdebug
+
 # Configure nginx
 COPY config/nginx.conf /etc/nginx/nginx.conf
+
+# Configure PHP
+COPY config/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # Configure supervisord
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
