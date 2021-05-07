@@ -41,6 +41,7 @@ RUN docker-php-ext-enable --ini-name 30-xdebug.ini xdebug
 COPY config/nginx.conf /etc/nginx/nginx.conf
 
 # Configure PHP
+RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 COPY config/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # Configure supervisord
