@@ -1,8 +1,14 @@
 FROM php:8.0.5-fpm-alpine3.13
 
 # Install packages and remove default server definition
-RUN apk --no-cache add gnupg autoconf make g++ nginx supervisor && \
+RUN apk --no-cache add gnupg autoconf make g++ nginx supervisor zlib-dev libpng-dev icu-dev icu-libs && \
     rm /etc/nginx/conf.d/default.conf
+
+# Install PHP extensions
+RUN docker-php-ext-install bcmath gd exif pcntl intl
+
+# Get latest Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Download Microsoft SQL Server Prerequisites
 RUN curl -O https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.7.2.1-1_amd64.apk
@@ -66,13 +72,9 @@ WORKDIR /var/www/html
 
 # Add a volume so that the external source code can be hooked
 VOLUME [ "/var/www/html" ]
-COPY --chown=nobody src/ /var/www/html/
 
 # Expose the port nginx is reachable on
 EXPOSE 8080
 
 # Let supervisord start nginx & php-fpm
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
-
-# Configure a healthcheck to validate that everything is up&running
-HEALTHCHECK --timeout=10s CMD curl --silent --fail http://127.0.0.1:8080/fpm-ping
