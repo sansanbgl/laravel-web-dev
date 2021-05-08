@@ -36,13 +36,13 @@ RUN apk add --allow-untrusted unixodbc-dev
 
 # Install SQL Server Drivers
 RUN pecl channel-update pecl.php.net
-RUN pecl install sqlsrv 5.9.0
-RUN pecl install pdo_sqlsrv 5.9.0
+RUN pecl install sqlsrv
+RUN pecl install pdo_sqlsrv
 RUN docker-php-ext-enable --ini-name 30-sqlsrv.ini sqlsrv
 RUN docker-php-ext-enable --ini-name 35-pdo_sqlsrv.ini pdo_sqlsrv
 
 # Install Xdebug
-RUN pecl install xdebug 3.0.4
+RUN pecl install xdebug
 RUN docker-php-ext-enable --ini-name 30-xdebug.ini xdebug
 
 # Configure nginx
