@@ -29,12 +29,14 @@ RUN rm msodbcsql17_17.7.2.1-1_amd64.apk \
 RUN apk add --allow-untrusted unixodbc-dev
 
 # Install SQL Server Drivers
-RUN pecl install sqlsrv pdo_sqlsrv
+RUN pecl channel-update pecl.php.net
+RUN pecl install sqlsrv 5.9.0
+RUN pecl install pdo_sqlsrv 5.9.0
 RUN docker-php-ext-enable --ini-name 30-sqlsrv.ini sqlsrv
 RUN docker-php-ext-enable --ini-name 35-pdo_sqlsrv.ini pdo_sqlsrv
 
 # Install Xdebug
-RUN pecl install xdebug
+RUN pecl install xdebug 3.0.4
 RUN docker-php-ext-enable --ini-name 30-xdebug.ini xdebug
 
 # Configure nginx
@@ -61,10 +63,10 @@ USER nobody
 
 # Add application
 WORKDIR /var/www/html
-COPY --chown=nobody src/ /var/www/html/
 
 # Add a volume so that the external source code can be hooked
 VOLUME [ "/var/www/html" ]
+COPY --chown=nobody src/ /var/www/html/
 
 # Expose the port nginx is reachable on
 EXPOSE 8080
