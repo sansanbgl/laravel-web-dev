@@ -1,4 +1,4 @@
-FROM php:8.0.5-fpm-alpine3.13
+FROM php:7.2.34-fpm-alpine3.12
 
 # Install packages and remove default server definition
 RUN apk --no-cache add gnupg autoconf make g++ nginx supervisor zlib-dev libpng-dev icu-dev icu-libs librdkafka-dev git && \
