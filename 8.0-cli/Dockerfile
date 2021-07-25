@@ -1,7 +1,7 @@
 FROM php:8.0.5-cli-alpine3.13
 
 # Install packages and remove default server definition
-RUN apk --no-cache add gnupg autoconf make g++ nginx supervisor zlib-dev libpng-dev icu-dev icu-libs librdkafka-dev git shadow && \
+RUN apk --no-cache add gnupg autoconf make g++ nginx supervisor zlib-dev libpng-dev icu-dev icu-libs librdkafka-dev git shadow nodejs nodejs-npm && \
     rm /etc/nginx/conf.d/default.conf
 
 # Install PHP extensions

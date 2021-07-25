@@ -1,7 +1,7 @@
 FROM php:7.2-fpm-alpine3.12
 
 # Install packages and remove default server definition
-RUN apk --no-cache add gnupg autoconf make g++ nginx supervisor zlib-dev libpng-dev icu-dev icu-libs librdkafka-dev git libzip-dev shadow && \
+RUN apk --no-cache add gnupg autoconf make g++ nginx supervisor zlib-dev libpng-dev icu-dev icu-libs librdkafka-dev git libzip-dev shadow nodejs nodejs-npm && \
     rm /etc/nginx/conf.d/default.conf
 
 # Install PHP extensions
