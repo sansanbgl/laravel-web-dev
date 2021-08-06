@@ -1,7 +1,7 @@
 FROM php:7.3-fpm-alpine3.13
 
 # Install packages and remove default server definition
-RUN apk --no-cache add gnupg autoconf make g++ nginx supervisor zlib-dev libpng-dev icu-dev icu-libs librdkafka-dev git libzip-dev && \
+RUN apk --no-cache add gnupg autoconf make g++ nginx supervisor zlib-dev libpng-dev icu-dev icu-libs librdkafka-dev git libzip-dev shadow nodejs nodejs-npm && \
     rm /etc/nginx/conf.d/default.conf
 
 # Install PHP extensions
@@ -64,14 +64,23 @@ COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Setup document root
 RUN mkdir -p /var/www/html
 
+# change default uid
+RUN usermod -u 1000 www-data
+RUN groupmod -g 1000 www-data
+
 # Make sure files/folders needed by the processes are accessable when they run under the nobody user
-RUN chown -R nobody.nobody /var/www/html && \
-  chown -R nobody.nobody /run && \
-  chown -R nobody.nobody /var/lib/nginx && \
-  chown -R nobody.nobody /var/log/nginx
+RUN chown -R www-data:www-data /var/www/html && \
+  chown -R www-data:www-data /run && \
+  chown -R www-data:www-data /var/run && \
+  chown -R www-data:www-data /var/lib/nginx && \
+  chown -R www-data:www-data /var/log/nginx
+
+# Setup nginx pid
+RUN touch /var/run/nginx.pid && \
+      chown -R www-data:www-data /var/run/nginx.pid
 
 # Switch to use a non-root user from here on
-USER nobody
+USER www-data
 
 # Add application
 WORKDIR /var/www/html
