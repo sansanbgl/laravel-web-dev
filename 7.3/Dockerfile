@@ -4,6 +4,9 @@ FROM php:7.3-fpm-alpine3.13
 RUN apk --no-cache add gnupg autoconf make g++ nginx supervisor zlib-dev libpng-dev icu-dev icu-libs librdkafka-dev git libzip-dev shadow nodejs nodejs-npm && \
     rm /etc/nginx/conf.d/default.conf
 
+#Install PHP ZIP
+RUN apk add --no-cache zip libzip-dev
+
 # Install PHP extensions
 RUN docker-php-ext-install bcmath gd exif pcntl intl zip
 
