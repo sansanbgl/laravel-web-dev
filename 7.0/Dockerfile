@@ -51,7 +51,7 @@ RUN touch /var/run/nginx.pid && \
       chown -R www-data:www-data /var/run/nginx.pid
 
 # Switch to use a non-root user from here on
-USER root
+USER www-data
 
 # Add application
 WORKDIR /var/www/html
