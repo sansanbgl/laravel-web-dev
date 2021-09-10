@@ -1,43 +1,25 @@
-FROM php:7.0-fpm-alpine
+FROM dptsi/php7.0-fpm-alpine
 
 # Install packages and remove default server definition
-RUN apk --no-cache add gnupg autoconf make g++ nginx supervisor zlib-dev libpng-dev icu-dev icu-libs librdkafka-dev git libzip-dev shadow nodejs nodejs-npm file imagemagick imagemagick-dev && \
+RUN apk --no-cache add gnupg autoconf make g++ nginx supervisor zlib-dev libpng-dev icu-dev icu-libs librdkafka-dev git libzip-dev shadow nodejs nodejs-npm && \
     rm /etc/nginx/conf.d/default.conf
 
 # Install PHP extensions
-RUN docker-php-ext-install bcmath gd exif pcntl intl zip calendar mbstring
-
-# Microsoft SQL Server Prerequisites
-RUN apt-get update \
-    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-    && curl https://packages.microsoft.com/config/debian/9/prod.list \
-        > /etc/apt/sources.list.d/mssql-release.list \
-    && apt-get install -y --no-install-recommends \
-        locales \
-        apt-transport-https \
-    && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
-    && locale-gen \
-    && apt-get update \
-    && apt-get -y --no-install-recommends install \
-        unixodbc-dev \
-        msodbcsql17
-RUN docker-php-ext-install mbstring pdo pdo_mysql \
-    && pecl install sqlsrv pdo_sqlsrv xdebug \
-    && docker-php-ext-enable sqlsrv pdo_sqlsrv xdebug
+RUN docker-php-ext-install bcmath gd exif pcntl intl zip
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Install unixodbc-dev required for pecl
+RUN apk add --allow-untrusted unixodbc-dev
+
 # Install SQL Server Drivers
 RUN pecl channel-update pecl.php.net
 RUN pecl install rdkafka    
-RUN pecl install imagick
-
 RUN docker-php-ext-enable rdkafka
-RUN docker-php-ext-enable imagick
 
 # Install Xdebug
-RUN pecl install xdebug
+RUN pecl install xdebug-2.9.0
 RUN docker-php-ext-enable --ini-name 30-xdebug.ini xdebug
 
 # Configure nginx
@@ -69,7 +51,7 @@ RUN touch /var/run/nginx.pid && \
       chown -R www-data:www-data /var/run/nginx.pid
 
 # Switch to use a non-root user from here on
-USER www-data
+USER root
 
 # Add application
 WORKDIR /var/www/html
