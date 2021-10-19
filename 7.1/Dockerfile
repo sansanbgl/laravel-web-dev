@@ -64,24 +64,6 @@ COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Setup document root
 RUN mkdir -p /var/www/html
 
-# change default uid
-RUN usermod -u 1000 www-data
-RUN groupmod -g 1000 www-data
-
-# Make sure files/folders needed by the processes are accessable when they run under the nobody user
-RUN chown -R www-data:www-data /var/www/html && \
-  chown -R www-data:www-data /run && \
-  chown -R www-data:www-data /var/run && \
-  chown -R www-data:www-data /var/lib/nginx && \
-  chown -R www-data:www-data /var/log/nginx
-
-# Setup nginx pid
-RUN touch /var/run/nginx.pid && \
-      chown -R www-data:www-data /var/run/nginx.pid
-
-# Switch to use a non-root user from here on
-USER www-data
-
 # Add application
 WORKDIR /var/www/html
 
