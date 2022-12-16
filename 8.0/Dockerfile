@@ -51,7 +51,7 @@ RUN docker-php-ext-enable rdkafka
 RUN docker-php-ext-enable imagick
 
 # Install Xdebug
-RUN pecl install xdebug
+RUN pecl install xdebug-2.9.8
 RUN docker-php-ext-enable --ini-name 30-xdebug.ini xdebug
 
 # Install redis
