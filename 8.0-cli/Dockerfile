@@ -48,7 +48,7 @@ RUN docker-php-ext-enable --ini-name 35-pdo_sqlsrv.ini pdo_sqlsrv
 RUN docker-php-ext-enable rdkafka
 
 # Install Xdebug
-RUN pecl install xdebug-2.9.8
+RUN pecl install xdebug-3.2.0
 RUN docker-php-ext-enable --ini-name 30-xdebug.ini xdebug
 
 # Configure nginx
