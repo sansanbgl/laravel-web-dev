@@ -4,6 +4,9 @@ FROM php:8.0.5-cli-alpine3.13
 RUN apk --no-cache add gnupg autoconf make g++ nginx supervisor zlib-dev libpng-dev icu-dev icu-libs librdkafka-dev git shadow nodejs nodejs-npm && \
     rm /etc/nginx/conf.d/default.conf
 
+# Update Linux Header
+RUN apk add --update linux-headers
+
 # Install PHP extensions
 RUN docker-php-ext-install bcmath gd exif pcntl intl
 
