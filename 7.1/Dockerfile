@@ -8,7 +8,7 @@ RUN apk --no-cache add gnupg autoconf make g++ nginx supervisor zlib-dev libpng-
 RUN docker-php-ext-install bcmath gd exif pcntl intl zip
 
 # Get latest Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.2.18 /usr/bin/composer /usr/bin/composer
 
 # Download Microsoft SQL Server Prerequisites
 RUN curl -O https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.7.2.1-1_amd64.apk
